@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Varriale Schede Maps</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: work sheet. Stato attuale sede per sede (screenshot + campi + problemi), poi piano d'intervento a fasi in tabella. */
+:root{
+  --bg:#f5f7f8; --paper:#ffffff; --ink:#15232b; --muted:#5b6b73; --line:#dbe3e7;
+  --accent:#0f6f78; --accent-soft:#e1f0f1;
+  --bad:#b3261e; --bad-soft:#fbe9e7; --warn:#8a5a00; --warn-soft:#fdf1d8; --ok:#1e6b3a; --ok-soft:#e3f3e8;
+  --f-display:"Manrope",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f171b; --paper:#162126; --ink:#e3ecef; --muted:#93a4ab; --line:#26363d;
+  --accent:#5cc3cc; --accent-soft:#16363a;
+  --bad:#ff8a80; --bad-soft:#3a1d1b; --warn:#f0c060; --warn-soft:#352a12; --ok:#7fd49a; --ok-soft:#17301f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f171b; --paper:#162126; --ink:#e3ecef; --muted:#93a4ab; --line:#26363d;
+  --accent:#5cc3cc; --accent-soft:#16363a;
+  --bad:#ff8a80; --bad-soft:#3a1d1b; --warn:#f0c060; --warn-soft:#352a12; --ok:#7fd49a; --ok-soft:#17301f; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:32px 64px;display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(26px,4vw,36px);font-weight:800}
+h2{font-size:22px;font-weight:800}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header{display:grid;gap:12px}
+.facts{display:flex;flex-wrap:wrap;gap:8px}
+.fact{font:500 13px var(--f-mono);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+.alert{background:var(--warn-soft);border-left:4px solid var(--warn);padding:14px 16px;border-radius:0 8px 8px 0;display:grid;gap:6px}
+.alert b{color:var(--warn)}
+section{display:grid;gap:20px}
+.sede{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px}
+@media (max-width:760px){.sede{grid-template-columns:1fr}.sede figure{max-width:320px}}
+.sede figure{margin:0;display:grid;gap:6px}
+.sede img{width:100%;border:1px solid var(--line);border-radius:8px;display:block}
+figcaption{font:12px var(--f-mono);color:var(--muted)}
+.body{display:grid;gap:16px;min-width:0;align-content:start}
+dl{display:grid;grid-template-columns:130px minmax(0,1fr);gap:6px 12px;margin:0;font-size:14px}
+dt{font:500 12px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+dd{margin:0;overflow-wrap:anywhere}
+.issues{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.issues li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;font-size:14px}
+.pill{font:600 11px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.alta{background:var(--bad-soft);color:var(--bad)}
+.media{background:var(--warn-soft);color:var(--warn)}
+.bassa{background:var(--accent-soft);color:var(--accent)}
+.okp{background:var(--ok-soft);color:var(--ok)}
+.tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--bg)}
+tr.phase td{background:var(--accent-soft);font:600 13px var(--f-display);color:var(--accent)}
+td.n{font:500 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums;width:36px}
+td.w{font:12px var(--f-mono);color:var(--muted);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.cmp div{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:4px}
+.cmp code{font:13px var(--f-mono)}
+footer{font:12px var(--f-mono);color:var(--muted);display:grid;gap:4px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start}
+.stat h3{font-size:16px}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:14px}
+.kv b{font:600 15px var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.note{font-size:13px;color:var(--muted)}
+.explain{display:grid;gap:12px;max-width:72ch}
+.explain p{max-width:none}
+.todo{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.todo li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px}
+.pair h3{grid-column:1/-1}
+.pair figure{margin:0;display:grid;gap:6px;align-content:start}
+.pair img{width:100%;border:1px solid var(--line);border-radius:8px;display:block}
+.pair .changes{grid-column:1/-1;font-size:14px;margin:0;padding-left:18px;display:grid;gap:4px}
+@media (max-width:560px){.pair{gap:8px;padding:10px}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Studio Dott. Antonio Varriale · schede Google Business</div>
+  <h1>Le tre schede Google dello studio</h1>
+  <p class="muted">Napoli Centro Direzionale, Giugliano in Campania, Casapulla. Aggiornato il 5 ottobre 2026. Tutte le modifiche sono fatte via API dall'account di Giorgio Gnoli, che è gestore delle schede; il dottore resta proprietario.</p>
+</header>
+
+<section>
+  <h2>In sintesi: cosa abbiamo fatto</h2>
+  <p class="muted">Lavoro fatto dal 30 settembre al 2 ottobre 2026 sulle tre schede (Napoli Centro Direzionale, Giugliano in Campania, Casapulla), tutto via API dall'account di gestione. Lo stato di partenza di ogni scheda è salvato.</p>
+  <ul class="todo">
+    <li><span class="pill okp">Identità</span><span><b>Stesso nome sulle tre schede:</b> "Studio Dentistico Dott. Antonio Varriale". Prima erano tre nomi diversi, e a Casapulla mancava il cognome.</span></li>
+    <li><span class="pill okp">Identità</span><span><b>Categoria principale "Dentista" ovunque</b> (Napoli e Giugliano avevano "Medico"). Secondarie: ortodontista, protesista e implantologo, implantologia dentale, dentista pediatrico, clinica per la cura della pelle.</span></li>
+    <li><span class="pill okp">Contenuti</span><span><b>Descrizione uguale sulle tre</b>, cambiano solo sede e zona: trattamenti, iscrizione all'Ordine, prima visita gratuita, rimando alle altre due sedi.</span></li>
+    <li><span class="pill okp">Contenuti</span><span><b>11 servizi con descrizione</b> su ogni scheda: 7 di odontoiatria, 4 di medicina estetica. Prima Napoli ne aveva 5 senza testo, le altre nessuno.</span></li>
+    <li><span class="pill okp">Contenuti</span><span><b>Attributi:</b> su appuntamento, cure pediatriche, odontoiatria estetica, carte di credito e debito, pagamento a rate. Tolto "solo contanti" da Giugliano.</span></li>
+    <li><span class="pill okp">Dati</span><span><b>Orari confermati dal dottore:</b> Napoli martedì-venerdì 11-17; Giugliano invariato, con il giovedì 10-13.</span></li>
+    <li><span class="pill okp">Dati</span><span><b>Telefoni:</b> cellulare 330 841978 come principale, fisso 0823 491479 come secondario su tutte e tre (il fisso trasferisce al cellulare).</span></li>
+    <li><span class="pill okp">Dati</span><span><b>Sito:</b> tutte e tre puntano ad antoniovarriale.it/odontoiatria, con un codice per sede che permette di contare le visite in arrivo da ogni scheda. Prima Giugliano e Casapulla puntavano al .net.</span></li>
+    <li><span class="pill okp">Dati</span><span><b>Prenotazione:</b> tolti 4 link che portavano alla sede sbagliata. Napoli: profilo MioDottore. Giugliano: AlfaDocs + MioDottore. Casapulla: agenda MioDottore di Casapulla.</span></li>
+    <li><span class="pill okp">Dati</span><span><b>Pin di Napoli</b> spostato da Giorgio sull'ingresso del palazzo F11.</span></li>
+    <li><span class="pill okp">Immagine</span><span><b>Copertina:</b> il dottore in camice e cravatta, come ha chiesto lui. Cancellata la foto col vecchio team che Google mostrava in evidenza.</span></li>
+    <li><span class="pill okp">Immagine</span><span><b>Logo:</b> il logo AV del sito, su fondo bianco.</span></li>
+    <li><span class="pill okp">Immagine</span><span><b>Foto in categoria:</b> 216 foto su 250 ora hanno una categoria (interni, team, al lavoro). Restano in "Altro" grafiche, attestati e video.</span></li>
+    <li><span class="pill okp">Numeri</span><span><b>Dati degli ultimi 3 mesi scaricati</b> per le tre sedi: viste, chiamate, indicazioni, parole cercate.</span></li>
+    <li><span class="pill okp">Recensioni</span><span><b>Controllate tutte e 42:</b> hanno già la risposta del dottore. Nessun intervento.</span></li>
+  </ul>
+  <p class="note">In attesa del dottore: chiusure delle feste, foto nuove per sede, foto clinica in evidenza a Casapulla, foto con i collaboratori di prima, mail mensile con i numeri, doppia agenda MioDottore a Giugliano, indirizzo su AlfaDocs (n.22 invece di 20), orari sul sito .it. Il dettaglio è in fondo alla pagina, in "Cosa manca".</p>
+</section>
+
+<section>
+  <h2>Perché "Dentista", e perché il nome è questo</h2>
+  <div class="explain">
+    <p><b>La categoria.</b> Google decide per quali ricerche mostrare una scheda soprattutto dalla categoria principale. Napoli e Giugliano avevano "Medico": per Google erano studi di medicina generale, messi in gara con i medici di base e non con i dentisti. Per questo con 13 e 22 recensioni a 5 stelle comparivano poco per "dentista". Casapulla, l'unica che aveva già "Dentista", è seconda in zona con 7 recensioni. Ora tutte e tre hanno "Dentista" come principale. Ortodonzia, implantologia, protesi, pediatria e medicina estetica sono categorie secondarie: allargano le ricerche senza togliere forza alla principale.</p>
+    <p><b>Il nome.</b> Le tre schede avevano tre nomi diversi e Google le trattava come tre studi senza legame. Casapulla non aveva nemmeno il cognome. Ora il nome è lo stesso ovunque: <b>Studio Dentistico Dott. Antonio Varriale</b>. Non ci sono città o parole come "Dentista Napoli" dopo il nome: le regole di Google vogliono solo il nome reale dell'attività. Chi aggiunge parole chiave rischia che un concorrente segnali la scheda, che Google cambi il nome d'ufficio o, nei casi ripetuti, sospenda la scheda. La scheda di Napoli aveva "- Dentista Napoli -" ed era esposta proprio a questo. La sede la indicano l'indirizzo e la descrizione.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Come sono andate le schede negli ultimi 3 mesi</h2>
+  <p class="muted">Dati di Google Business Profile dal 29 giugno al 27 settembre 2026, scaricati via API. "Viste" conta le volte in cui la scheda è comparsa a qualcuno su Google Ricerca o Maps, al massimo una per persona al giorno. "Chiamate", "Indicazioni" e "Clic al sito" sono i tocchi sui pulsanti della scheda.</p>
+  <div class="stats">
+    <div class="stat"><h3>Napoli</h3><div class="kv">
+      <span>Viste</span><b>1.693</b><span>Chiamate</span><b>24</b><span>Richieste di indicazioni</span><b>136</b><span>Clic al sito</span><b>14</b>
+      <span>Ricerche del suo nome</span><b>466</b><span>Ricerche generiche</span><b>59</b></div>
+      <p class="note">Le ricerche generiche sono "dentista napoli" (39) e "dentista" (20). Esempio: su 100 persone che trovano la scheda cercando qualcosa di preciso, 89 cercavano già "Antonio Varriale".</p></div>
+    <div class="stat"><h3>Giugliano</h3><div class="kv">
+      <span>Viste</span><b>1.093</b><span>Chiamate</span><b>23</b><span>Richieste di indicazioni</span><b>154</b><span>Clic al sito</span><b>16</b>
+      <span>Ricerche del suo nome</span><b>462</b><span>Ricerche generiche</span><b>&lt;15 ciascuna</b></div>
+      <p class="note">Nessuna ricerca generica supera le 15 al mese: la scheda la trova solo chi conosce già il dottore. È l'effetto della categoria "Medico".</p></div>
+    <div class="stat"><h3>Casapulla</h3><div class="kv">
+      <span>Viste</span><b>392</b><span>Chiamate</span><b>4</b><span>Richieste di indicazioni</span><b>152</b><span>Clic al sito</span><b>4</b>
+      <span>Ricerche del suo nome</span><b>&lt;15</b><span>Ricerche generiche</span><b>&lt;15 ciascuna</b></div>
+      <p class="note">Poche viste ma 152 richieste di indicazioni: circa una persona su tre che vede la scheda chiede la strada. Le ricerche sono "dentista" e "dentista casapulla".</p></div>
+  </div>
+  <p class="note">Ricerche del nome e generiche: Google non dà più la divisione tra ricerche dirette e di scoperta, quindi la ricostruiamo dalle parole cercate. Se contiene "Varriale" è diretta, altrimenti è di scoperta. Sotto le 15 ricerche al mese Google non dà il numero esatto, solo "meno di 15". Luglio ha un picco su tutte e tre (Napoli 861 viste contro circa 400 negli altri mesi). Su richiesta possiamo mandare i file completi: metriche giorno per giorno e parole cercate per sede.</p>
+  <div class="alert" style="border-left-color:var(--accent);background:var(--accent-soft)">
+    <b style="color:var(--accent)">Su richiesta: il riepilogo automatico</b>
+    <p>Gli stessi numeri, per le tre sedi, in una mail che arriva da sola il primo del mese: viste, chiamate, indicazioni, ricerche del nome e generiche, confronto con il mese prima. Basta un ok e l'indirizzo a cui mandarla.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Fatto il 30 settembre, via API</h2>
+  <p class="muted">Modifiche inviate alle tre schede dall'account Giorgio Gnoli, senza browser. Google le ha accettate e la revisione si è chiusa lo stesso giorno: sono tutte visibili su Maps. Lo stato precedente di ogni scheda è salvato.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Campo</th><th>Prima</th><th>Dopo (tutte e tre)</th><th>Stato</th></tr></thead>
+    <tbody>
+      <tr><td>Nome</td><td>Napoli "…- Dentista Napoli -" · Giugliano "Dott. Varriale Antonio" · Casapulla "Studio Medico Estetico Odontoiatrico"</td><td>Studio Dentistico Dott. Antonio Varriale</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Categoria principale</td><td>Napoli e Giugliano: Medico · Casapulla: Dentista</td><td>Dentista</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Categorie secondarie</td><td>Dentista o Medico, Chirurgo estetico</td><td>Ortodontista, Protesista e implantologo, Servizi di implantologia dentale, Dentista pediatrico, Clinica per la cura della pelle</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Sito</td><td>Napoli .it home · Giugliano e Casapulla .net</td><td>antoniovarriale.it/odontoiatria con UTM <code>gbp-&lt;sede&gt;</code></td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Descrizione</td><td>Napoli "Odontoiatra e Medicina Estetica" · Giugliano 36 caratteri · Casapulla parlava di "odontoiatra a Napoli"</td><td>Una per sede: zona, trattamenti, iscrizione all'Ordine, prima visita gratuita, rimando alle altre sedi</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Servizi</td><td>Napoli 5 senza descrizione · Giugliano e Casapulla 0</td><td>11 con descrizione: 7 odontoiatrici, 4 di medicina estetica</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Telefono</td><td>Cellulare 330 841978 su tutte · fisso 0823 491479 solo su Casapulla</td><td>Cellulare principale, 0823 491479 secondario su tutte e tre (il fisso trasferisce al cellulare). Il 081 1928 9060 di MioDottore è il loro centralino, escluso</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Orari</td><td>Napoli lun-ven 10-17 (sito: mar-ven 11-16) · Giugliano ha anche gio 10-13, che sul sito non c'è</td><td>Confermati dal dottore il 30/09. Napoli: mar-ven 11-17. Giugliano: invariato, il giovedì 10-13 è giusto. Il sito .it dice ancora 11-16 per Napoli e non ha il giovedì di Giugliano.</td><td><span class="pill okp">Napoli aggiornato</span></td></tr>
+      <tr><td>Descrizione (omologata)</td><td>Tre testi diversi</td><td>Stesso testo sulle tre, cambiano solo la prima frase (sede e zona) e l'ultima (le altre due sedi). 685-718 caratteri</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Attributi</td><td>Napoli nessuno · Giugliano "solo contanti" insieme alle carte · Casapulla solo accessibilità</td><td>Su tutte: su appuntamento, cure pediatriche, odontoiatria estetica, carte di credito e debito, piani di pagamento. Tolto "solo contanti". Accessibilità lasciata com'era, sede per sede</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Copertina e logo</td><td>Ritratto del dottore scelto da Google</td><td>2/10, su richiesta del dottore: copertina = sua foto in camice e cravatta (lati allargati per il formato 16:9 che Google impone). Cancellata la foto col vecchio team caricata il 30/09, che Google continuava a mostrare in evidenza. Logo: il logo AV del sito .it ("Studio Odontoiatrico Dott. A. Varriale") su fondo bianco, con le scritte rese scure per leggerle</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Risposte alle recensioni</td><td>42 recensioni</td><td>Tutte hanno già una risposta, scritta dal dottore. Non sovrascritte</td><td><span class="pill okp">Niente da fare</span></td></tr>
+      <tr><td>Link di prenotazione</td><td>Su tutte e tre: agenda MioDottore di Casapulla e pagina AlfaDocs di Giugliano, anche dove la sede era un'altra</td><td>Napoli: profilo MioDottore (si sceglie la sede). Giugliano: profilo MioDottore + AlfaDocs di Giugliano. Casapulla: agenda MioDottore di Casapulla come link principale + profilo MioDottore. Tolti i 4 link che portavano alla sede sbagliata. Google non accetta un link MioDottore distinto per sede perché MioDottore usa lo stesso indirizzo per tutte</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Pin Napoli</td><td>40.857947, 14.280556</td><td>Spostato a mano da Giorgio il 1/10: 40.857890, 14.280546, sull'ingresso del palazzo F11</td><td><span class="pill okp">Fatto</span></td></tr>
+      <tr><td>Link appuntamenti (secondo campo)</td><td>Su tutte e tre ancora AlfaDocs di Giugliano e agenda MioDottore di Casapulla</td><td>Napoli: profilo MioDottore. Giugliano: AlfaDocs. Casapulla: agenda MioDottore di Casapulla</td><td><span class="pill okp">Pubblicato</span></td></tr>
+      <tr><td>Categorie foto</td><td>Napoli 108, Giugliano 77, Casapulla 65 foto senza categoria</td><td>Classificate guardandole una per una: Interni (10, tutte di Napoli), Team (13), Al lavoro (195: cure e risultati clinici, protesi comprese). Restano in "Altro" 33 tra grafiche promozionali, screenshot, attestati e video. Giugliano e Casapulla non hanno foto dei propri ambienti: servono quelle nuove del dottore</td><td><span class="pill okp">Fatto</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Prima e dopo su Maps</h2>
+  <p class="muted">Stesse schede, stessa vista di Google Maps senza login: a sinistra il 30 settembre prima delle modifiche, a destra il 1 ottobre a revisione chiusa. Il link "alfadocs.com" che si vede ancora su Napoli e Casapulla veniva da un secondo campo della scheda, corretto il 1 ottobre: sparisce al prossimo aggiornamento di Maps.</p>
+  <article class="pair">
+    <h3>Napoli · Centro Direzionale</h3>
+    <figure><img src="shots/napoli.jpg" alt="Napoli · Centro Direzionale, prima" width="416" height="1000"><figcaption>Prima · 30/09/2026</figcaption></figure>
+    <figure><img src="shots-dopo/napoli.jpg" alt="Napoli · Centro Direzionale, dopo" width="416" height="1000"><figcaption>Dopo · 01/10/2026</figcaption></figure>
+    <ul class="changes"><li>Nome: tolto "- Dentista Napoli -"</li><li>Categoria: da Medico a Dentista</li><li>Orari: apre alle 11 (prima alle 10), martedì-venerdì</li><li>Copertina: il team in studio, poi dal 2/10 il dottore in camice</li><li>Pin: spostato a mano da Giorgio sull'ingresso del palazzo F11</li></ul>
+  </article>
+  <article class="pair">
+    <h3>Giugliano in Campania</h3>
+    <figure><img src="shots/giugliano.jpg" alt="Giugliano in Campania, prima" width="416" height="1000"><figcaption>Prima · 30/09/2026</figcaption></figure>
+    <figure><img src="shots-dopo/giugliano.jpg" alt="Giugliano in Campania, dopo" width="416" height="1000"><figcaption>Dopo · 01/10/2026</figcaption></figure>
+    <ul class="changes"><li>Nome: "Dott. Antonio Varriale" invece di "Dott. Varriale Antonio"</li><li>Categoria: da Medico a Dentista</li><li>Sito: da antoniovarriale.net ad antoniovarriale.it</li></ul>
+  </article>
+  <article class="pair">
+    <h3>Casapulla</h3>
+    <figure><img src="shots/casapulla.jpg" alt="Casapulla, prima" width="416" height="1000"><figcaption>Prima · 30/09/2026</figcaption></figure>
+    <figure><img src="shots-dopo/casapulla.jpg" alt="Casapulla, dopo" width="416" height="1000"><figcaption>Dopo · 01/10/2026</figcaption></figure>
+    <ul class="changes"><li>Nome: da "Studio Medico Estetico Odontoiatrico" a "Studio Dentistico Dott. Antonio Varriale"</li><li>Sito: da antoniovarriale.net ad antoniovarriale.it</li><li>Prima immagine: Google mostra una foto clinica prima/dopo invece della copertina (vedi "Cosa farei ancora")</li></ul>
+  </article>
+</section>
+
+<section>
+  <h2>Com'erano le schede il 30 settembre, prima delle modifiche</h2>
+
+  <article class="sede">
+    <figure><img src="shots/napoli.jpg" alt="Scheda Google Maps sede Napoli Centro Direzionale" width="416" height="1000"><figcaption>Napoli · 30/09/2026</figcaption></figure>
+    <div class="body">
+      <h3>Napoli · Centro Direzionale, Isola F11</h3>
+      <dl>
+        <dt>Nome</dt><dd>Studio Dentistico Dott. Antonio Varriale - Dentista Napoli -</dd>
+        <dt>Categoria</dt><dd>Medico</dd>
+        <dt>Sito</dt><dd>antoniovarriale.it (Wix, titolo "Medicina Estetica Napoli")</dd>
+        <dt>Prenotazione</dt><dd>alfadocs.com</dd>
+        <dt>Orari</dt><dd>Mercoledì apre alle 10 · sul sito .it Napoli è mar-ven 11-16</dd>
+        <dt>18/09</dt><dd>13 recensioni · 110 foto · #1 per "dentista" dal Centro Direzionale</dd>
+      </dl>
+      <ul class="issues">
+        <li><span class="pill alta">Alta</span><span>Keyword e città nel nome, con trattino finale. Rischio sospensione proprio sulla sede che oggi è prima.</span></li>
+        <li><span class="pill alta">Alta</span><span>Categoria principale "Medico": compete con i medici di base, non con i dentisti.</span></li>
+        <li><span class="pill media">Media</span><span>Orari scheda e sito non coincidono (10 contro 11). Google e pazienti vedono due informazioni diverse.</span></li>
+        <li><span class="pill media">Media</span><span>Unica sede che punta al .it: le altre due puntano al .net.</span></li>
+        <li><span class="pill okp">Tiene</span><span>Primo posto davanti a Catanzano (434 recensioni). Non va toccato niente senza baseline.</span></li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="sede">
+    <figure><img src="shots/giugliano.jpg" alt="Scheda Google Maps sede Giugliano" width="416" height="1000"><figcaption>Giugliano · 30/09/2026</figcaption></figure>
+    <div class="body">
+      <h3>Giugliano · Via Vicinale Grotta dell'Olmo 20</h3>
+      <dl>
+        <dt>Nome</dt><dd>Studio Dentistico Dott. Varriale Antonio</dd>
+        <dt>Categoria</dt><dd>Medico (Dentista secondaria)</dd>
+        <dt>Sito</dt><dd>antoniovarriale.net (WordPress, una pagina + blog)</dd>
+        <dt>Prenotazione</dt><dd>alfadocs.com</dd>
+        <dt>Orari</dt><dd>Mercoledì apre alle 17 · coerente con il sito</dd>
+        <dt>18/09</dt><dd>22 recensioni · 87 foto · fuori dai primi 20 per "dentista Giugliano"</dd>
+      </dl>
+      <ul class="issues">
+        <li><span class="pill alta">Alta</span><span>Categoria principale "Medico".</span></li>
+        <li><span class="pill media">Media</span><span>Nome con ordine invertito rispetto a Napoli ("Varriale Antonio"): Google non collega le due entità.</span></li>
+        <li><span class="pill media">Media</span><span>Sito .net quasi vuoto, senza numero cliccabile: la scheda manda traffico alla pagina più debole.</span></li>
+        <li><span class="pill media">Media</span><span>La sede è a 10 km dal centro verso Varcaturo: la gara vera è "dentista Varcaturo" e "dentista Lago Patria".</span></li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="sede">
+    <figure><img src="shots/casapulla.jpg" alt="Scheda Google Maps sede Casapulla" width="416" height="1000"><figcaption>Casapulla · 30/09/2026</figcaption></figure>
+    <div class="body">
+      <h3>Casapulla (CE) · Via Circumvallazione 59</h3>
+      <dl>
+        <dt>Nome</dt><dd>Studio Medico Estetico Odontoiatrico</dd>
+        <dt>Categoria</dt><dd>Dentista</dd>
+        <dt>Sito</dt><dd>antoniovarriale.net</dd>
+        <dt>Prenotazione</dt><dd>alfadocs.com</dd>
+        <dt>Orari</dt><dd>Lunedì e giovedì 17-20 · coerente con il sito</dd>
+        <dt>18/09</dt><dd>7 recensioni · 65 foto · #2 per "dentista Casapulla" dietro Vitelli (non rivendicata, 3,8★, 4 recensioni)</dd>
+      </dl>
+      <ul class="issues">
+        <li><span class="pill alta">Alta</span><span>Il nome non contiene il cognome: nessuno la collega allo studio di Napoli e Giugliano.</span></li>
+        <li><span class="pill media">Media</span><span>Sei ore di apertura a settimana: fuori orario Google spinge chi è aperto. Le recensioni devono compensare.</span></li>
+        <li><span class="pill media">Media</span><span>Sito .net, come Giugliano.</span></li>
+        <li><span class="pill okp">Tiene</span><span>Unica con "Dentista" come categoria principale, ed è seconda con 7 recensioni.</span></li>
+      </ul>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>Cosa manca</h2>
+  <ul class="todo">
+    <li><span class="pill alta">Dottore</span><span><b>Foto per sede.</b> 5-10 foto recenti per sede: esterno con l'ingresso, sala d'attesa, poltrona, team. Ha chiesto tempo.</span></li>
+    <li><span class="pill media">Dottore</span><span><b>Riepilogo mensile via mail.</b> Serve il suo sì e l'indirizzo.</span></li>
+    <li><span class="pill media">Dottore</span><span><b>Insegne e chat Google.</b> Che nome c'è sulle porte, e se gli arrivano messaggi dalla chat delle schede.</span></li>
+    <li><span class="pill media">Noi</span><span><b>Post sulle schede.</b> Un aggiornamento ogni 1-2 settimane per sede (trattamenti, prima visita gratuita). Si può partire subito via API.</span></li>
+    <li><span class="pill media">Noi</span><span><b>Posizioni di partenza.</b> Misura di "dentista" attorno a ogni sede, e per Giugliano anche "dentista Varcaturo" e "dentista Lago Patria", per avere il confronto a 30 giorni.</span></li>
+    <li><span class="pill bassa">Dottore</span><span><b>MioDottore e AlfaDocs.</b> Su MioDottore Giugliano ha due agende sullo stesso indirizzo (una si chiama "Studio Medico"): va tolta la doppia. AlfaDocs ha una sola pagina, per Giugliano, con indirizzo al n.22 invece del 20.</span></li>
+    <li><span class="pill bassa">Dottore o Wix</span><span><b>Dati da allineare fuori da Google.</b> Sito .it: orari di Napoli (dice 11-16) e giovedì di Giugliano.</span></li>
+    <li><span class="pill bassa">Noi</span><span><b>Controllo a 30 giorni</b>, verso il 30 ottobre: stessi numeri e stessi screenshot di oggi, messi a confronto in questa pagina.</span></li>
+    <li><span class="pill bassa">Più avanti</span><span><b>Richiesta recensioni via WhatsApp dopo la visita.</b> Fa parte dell'automazione WhatsApp (voce 3 della proposta), non ancora venduta.</span></li>
+  </ul>
+  <h3 style="margin-top:8px">Cosa farei ancora</h3>
+  <ul class="todo">
+    <li><span class="pill alta">Proposta</span><span><b>Prima immagine di Casapulla.</b> Google mette in testa una foto clinica prima/dopo con denti rovinati, non la copertina. La foto l'ha caricata lo studio: toglierla, o spostarla dopo le foto nuove della sede, fa vedere per prima la copertina. Va deciso col dottore, perché la cancellazione non si annulla.</span></li>
+    <li><span class="pill alta">Dottore</span><span><b>Chiusure delle feste.</b> Le schede hanno solo le chiusure di aprile e maggio 2026. Mancano 8 dicembre, Natale, Capodanno ed Epifania: senza, Google mostra lo studio aperto quei giorni e a volte chiede al proprietario di confermare gli orari.</span></li>
+    <li><span class="pill media">Più avanti</span><span><b>Post.</b> L'ultimo è del 2023 a Napoli e Giugliano, del 2022 a Casapulla. In attesa del tuo via.</span></li>
+    <li><span class="pill bassa">Da non fare</span><span><b>Indirizzo di Napoli in maiuscolo</b> ("VIA G. PORZIO,4 ISOLA F11"). Maps lo mostra già scritto bene; cambiarlo può far ripartire la verifica della scheda.</span></li>
+  </ul>
+</section>
+
+<footer>
+  <span>Fonti: Google Business Profile API (dati e modifiche), Google Maps 30/09/2026 (screenshot senza login), OpenStreetMap (pin), siti antoniovarriale.it e .net, AlfaDocs, MioDottore, analisi Astra K del 18/09/2026.</span>
+  <span>Astra K S.r.l. · info@astrak.it</span>
+</footer>
+</div>
+
+</body>
+</html>
